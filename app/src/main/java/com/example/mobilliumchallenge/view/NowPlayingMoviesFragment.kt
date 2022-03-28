@@ -1,11 +1,13 @@
 package com.example.mobilliumchallenge.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import com.example.mobilliumchallenge.base.BaseFragment
 import com.example.mobilliumchallenge.databinding.FragmentNowPlayingMoviesBinding
 import com.example.mobilliumchallenge.model.entities.common.Result
 import com.example.mobilliumchallenge.utils.Constants
+import com.example.mobilliumchallenge.utils.D.getYearFromDateString
 import com.example.mobilliumchallenge.utils.ImageHelper
 
 
@@ -23,12 +25,13 @@ class NowPlayingMoviesFragment : BaseFragment<FragmentNowPlayingMoviesBinding>()
         initNowPlayingMovies()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initNowPlayingMovies(){
         arguments?.let {
             nowPlayingResult  = requireArguments().getParcelable(Constants.SLIDER_INTENT_KEY)
-            ImageHelper.loadImage(nowPlayingResult?.poster_path,binding.image)
-            binding.infoTitle.text = nowPlayingResult?.original_title
-            binding.info.text = nowPlayingResult?.title
+            ImageHelper.loadImage(nowPlayingResult?.backdrop_path,binding.image,ImageHelper.QUALITY.original)
+            binding.infoTitle.text = nowPlayingResult?.original_title + " (" + nowPlayingResult?.release_date?.getYearFromDateString()+ ")"
+            binding.info.text = nowPlayingResult?.overview
         }
     }
 

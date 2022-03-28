@@ -9,5 +9,9 @@
     <color name="divider_gray">#E9ECEF</color>
     <color name="text_black">#2B2D42</color>
     <color name="text_gray">#8D99AE</color>
+    <color name="dark_gray">#ADB5BD</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="color_fragment_title">#162A4C</color>
+
 </resources>

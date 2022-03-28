@@ -2,4 +2,7 @@
     <string name="app_name">MobilliumChallenge</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel">İptal</string>
+    <string name="okey">Tamam</string>
+    <string name="reteOf">/10</string>
 </resources>

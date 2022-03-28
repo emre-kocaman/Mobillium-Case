@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -23,59 +24,116 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
+    private var isUpdate: Boolean = false
     private val viewModel: HomeFragmentViewModel by hiltNavGraphViewModels(R.id.nav_graph)
     private var nowPlayingPageCounter: Int? = 1
     private var upcomingPageCounter: Int? = 1
-    private var position: Int = 1
+    private var position: Int = 0
 
+    private var isLoading: Boolean = true
+    private var isLastPage: Boolean = false
+    var adapter: UpcomingMoviesAdapter? = null
 
     override fun getViewBinding(): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(layoutInflater)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observers()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getNowPlayingMovies(nowPlayingPageCounter ?: 1, Constants.API_KEY)
+        isUpdate = false
         viewModel.getUpcomingMovies(upcomingPageCounter ?: 1, Constants.API_KEY)
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = false
+            isUpdate = false
+            viewModel.getNowPlayingMovies(nowPlayingPageCounter ?: 1, Constants.API_KEY)
+            viewModel.getUpcomingMovies(upcomingPageCounter ?: 1, Constants.API_KEY)
+        }
         observers()
     }
-
     private fun observers() {
+
         viewModel.nowPlayingMovies.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    hideProgress()
                     initNowPlayingMovies(it.data?.results ?: arrayListOf())
+                    viewModel.removeObserving()
                 }
                 Status.ERROR -> {
-
+                    hideProgress()
                 }
                 Status.LOADING -> {
-
+                    showProgress()
                 }
             }
         })
+
 
         viewModel.upComingMovies.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    initUpComingEvents(it.data?.results ?: arrayListOf())
+                    isLoading = false
+                    hideProgress()
+                    if (!isUpdate)
+                        initUpComingEvents(it.data?.results ?: arrayListOf())
+                    else
+                        updateUpComingEvents(it.data?.results ?: arrayListOf())
+
                 }
                 Status.ERROR -> {
-
+                    isLoading = false
+                    hideProgress()
                 }
                 Status.LOADING -> {
-
+                    isLoading = true
+                    showProgress()
                 }
             }
+
         })
     }
 
-    private fun initUpComingEvents(list:List<Result>){
-        val adapter = UpcomingMoviesAdapter(context,list.toMutableList())
+    private fun initUpComingEvents(list: List<Result>) {
+
+        adapter = UpcomingMoviesAdapter(context, list.toMutableList())
+        adapter?.listener?.observe(viewLifecycleOwner, {
+            navigateAction(HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(it.id))
+        })
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.isNestedScrollingEnabled = false
 
+
+
+
+        binding.scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+
+            val nestedScrollView = checkNotNull(v) {
+                return@setOnScrollChangeListener
+            }
+
+            val lastChild = nestedScrollView.getChildAt(nestedScrollView.childCount - 1)
+
+            if (lastChild != null) {
+
+                if ((scrollY >= (lastChild.measuredHeight - nestedScrollView.measuredHeight)) && scrollY > oldScrollY && !isLoading && !isLastPage) {
+                    upcomingPageCounter = upcomingPageCounter?.plus(1)
+                    isUpdate = true
+                    viewModel.getUpcomingMovies(upcomingPageCounter ?: -1, Constants.API_KEY)
+                }
+            }
+        }
+    }
+
+    private fun updateUpComingEvents(list: List<Result>) {
+        adapter?.addItems(list)
     }
 
     private fun pageChangeListener(mPager: ViewPager, size: Int) {
@@ -117,17 +175,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.height = 30
-            params.width = 30
-
-            val lineparams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            lineparams.height = 3
-            lineparams.width = 75
-            lineparams.setMargins(16, 0, 16, 0)
-
+            params.height = 15
+            params.width = 15
+            params.setMargins(4, 0, 4, 0)
 
             binding.dotsLayout.addView(dots[i], params)
         }

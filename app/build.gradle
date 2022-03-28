@@ -4,7 +4,8 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     id 'kotlin-kapt'
     id "dagger.hilt.android.plugin"
-    id "kotlin-parcelize"}
+    id "kotlin-parcelize"
+}
 
 android {
     compileSdk 31
@@ -32,7 +33,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
     kapt {
@@ -102,6 +103,10 @@ dependencies {
 
     //Google Auth
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
+
+    //lottie
+    def lottieVersion = "3.4.4"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     //DataStore
     implementation "androidx.datastore:datastore:1.0.0"

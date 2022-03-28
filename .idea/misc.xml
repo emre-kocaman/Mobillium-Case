@@ -5,9 +5,14 @@
       <map>
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/drawable/active_dots.xml" value="0.3828125" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/drawable/default_dots.xml" value="0.3828125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/drawable/ic_def_background.xml" value="0.3828125" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/activity_main.xml" value="0.30185185185185187" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/confirm_dialog.xml" value="0.3074074074074074" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/fragment_home.xml" value="0.30185185185185187" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/fragment_lottie_dialog.xml" value="0.3074074074074074" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/fragment_movie_detail.xml" value="0.3074074074074074" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/fragment_now_playing_movies.xml" value="0.30185185185185187" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/information_dialog.xml" value="0.3074074074074074" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MobilliumChallenge/app/src/main/res/layout/upcoming_movies_cell.xml" value="0.30185185185185187" />
       </map>
     </option>
